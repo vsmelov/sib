@@ -11,10 +11,12 @@ services:
       - '127.0.0.1:5000:5000'
     env_file:
       - .env
+    restart: always
   rabbit:
     image: rabbitmq
     env_file:
       - .env
+    restart: always
   worker-email:
     build: .
     command: python /sib/daemons/worker_email.py run
@@ -23,6 +25,7 @@ services:
       - ./src:/sib/src
     env_file:
       - .env
+    restart: always
   worker-http:
     build: .
     command: python /sib/daemons/worker_http.py run
@@ -31,3 +34,4 @@ services:
       - ./src:/sib/src
     env_file:
       - .env
+    restart: always
