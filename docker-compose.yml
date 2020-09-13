@@ -3,8 +3,31 @@ version: '3.7'
 services:
   web:
     build: .
-    command: python ./src/sib/main.py run
+    command: python /sib/daemons/web.py run
     volumes:
-      - .:/usr/src/app/
+      - ./daemons:/sib/daemons
+      - ./src:/sib/src
     ports:
-      - 5000:5000
+      - '127.0.0.1:5000:5000'
+    env_file:
+      - .env
+  rabbit:
+    image: rabbitmq
+    env_file:
+      - .env
+  worker-email:
+    build: .
+    command: python /sib/daemons/worker_email.py run
+    volumes:
+      - ./daemons:/sib/daemons
+      - ./src:/sib/src
+    env_file:
+      - .env
+  worker-http:
+    build: .
+    command: python /sib/daemons/worker_http.py run
+    volumes:
+      - ./daemons:/sib/daemons
+      - ./src:/sib/src
+    env_file:
+      - .env

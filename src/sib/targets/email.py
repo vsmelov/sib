@@ -1,13 +1,27 @@
+import os
 import typing as t
 import smtplib
 
 import requests
 from email.message import EmailMessage
 
-from targets.base import TargetBase
+from sib.targets.base import TargetBase
+from sib.targets.registered_targets import register_target
 
 
+@register_target
 class TargetEmail(TargetBase):
+    QUEUE = 'email'
+
+    @classmethod
+    def create(cls):
+        return cls(
+            domain=os.environ['TARGET_EMAIL_DOMAIN'],
+            login=os.environ['TARGET_EMAIL_LOGIN'],
+            password=os.environ['TARGET_EMAIL_PASSWORD'],
+            recipients=os.environ['TARGET_EMAIL_RECIPIENTS'].split(','),
+        )
+
     def __init__(
             self,
             domain: str,
