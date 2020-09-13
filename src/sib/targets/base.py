@@ -1,9 +1,10 @@
-import pickle
-import logging
 import abc
+import json
+import logging
+import pickle
+import typing as t
 
 import pika
-import requests
 
 from sib.utils.is_running import is_running
 from sib.utils.rabbit import get_rabbit_params
@@ -22,7 +23,7 @@ class TargetBase(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def handle(self, request: requests.Request):
+    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
         """ handle the request """
         pass
 
@@ -48,7 +49,10 @@ class TargetRunner:
             inactivity_timeout=1,
         )
         while is_running:
-            method, properties, body = next(gen)
+            try:
+                method, properties, body = next(gen)
+            except StopIteration:
+                break
             if (method, properties, body) == (None, None, None):
                 continue
             self.on_message_callback(method, properties, body)
@@ -56,15 +60,16 @@ class TargetRunner:
     def on_message_callback(self, method, _properties, raw_body):
         """ process the queue message """
         try:
-            request = pickle.loads(raw_body)
-        except (pickle.UnpicklingError, TypeError, ValueError) as exc:
+            headers, data = pickle.loads(raw_body)
+            headers = json.loads(headers)
+        except (pickle.UnpicklingError, json.JSONDecodeError, TypeError, ValueError) as exc:
             logger.info(f'{raw_body=}')
             logger.exception(f'bad body {type(exc)}')
             self.channel.basic_ack(delivery_tag=method.delivery_tag)  # remove bad message from the queue
             return
-        logger.info(f'receive {request.headers=} {request.data=}')
+        logger.info(f'receive {headers=} {data=}')
         try:
-            self.target.handle(request)
+            self.target.handle(headers, data)
         except Exception as exc:
             logger.exception(f'_on_message_callback exception {type(exc)}')
             self.channel.basic_nack(delivery_tag=method.delivery_tag)

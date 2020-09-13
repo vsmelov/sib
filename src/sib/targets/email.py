@@ -1,12 +1,13 @@
+import logging
 import os
-import typing as t
 import smtplib
-
-import requests
+import typing as t
 from email.message import EmailMessage
 
 from sib.targets.base import TargetBase
 from sib.targets.registered_targets import register_target
+
+logger = logging.getLogger()
 
 
 @register_target
@@ -35,14 +36,15 @@ class TargetEmail(TargetBase):
         self._recipients = recipients
         self._smtp.login(login, password)
 
-    def handle(self, request: requests.Request):
+    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
         subject = 'forwarded'
-        content = str(request.data)
         msg = EmailMessage()
+        content = f'{headers=} {data=}'
         msg.set_content(content)
         msg['Subject'] = subject
         msg['From'] = self._login
         msg['To'] = ', '.join(self._recipients)
+        logger.info(f'send {subject=} {content=}')
         self._smtp.send_message(msg)
 
     def close(self):

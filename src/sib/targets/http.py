@@ -1,3 +1,4 @@
+import typing as t
 import os
 import requests
 
@@ -16,8 +17,8 @@ class TargetHttp(TargetBase):
     def __init__(self, url: str):
         self._url = url
 
-    def handle(self, request: requests.Request):
-        requests.post(self._url, headers=request.headers, data=request.data)
+    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
+        requests.post(self._url, headers=headers, data=data)
 
     def close(self):
         pass
