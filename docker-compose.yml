@@ -12,6 +12,8 @@ services:
     env_file:
       - .env
     restart: always
+    depends_on:
+      - rabbit
   rabbit:
     image: rabbitmq
     env_file:
@@ -26,6 +28,8 @@ services:
     env_file:
       - .env
     restart: always
+    depends_on:
+      - rabbit
   worker-http:
     build: .
     command: python /sib/daemons/worker_http.py run
@@ -35,3 +39,5 @@ services:
     env_file:
       - .env
     restart: always
+    depends_on:
+      - rabbit
