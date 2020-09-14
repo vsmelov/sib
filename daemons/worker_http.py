@@ -1,7 +1,7 @@
 import logging
 import os
 
-from sib.targets.base import TargetRunner
+from sib.targets import TargetRunner
 from sib.targets.http import TargetHttp
 from sib.utils.log import init_log
 

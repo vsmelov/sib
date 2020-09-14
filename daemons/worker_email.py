@@ -1,7 +1,7 @@
 import logging
 import os
 
-from sib.targets.base import TargetRunner
+from sib.targets import TargetRunner
 from sib.targets.email import TargetEmail
 from sib.utils.log import init_log
 
