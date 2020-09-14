@@ -15,7 +15,7 @@ docker-compose up -d
 # Example
 
 ```bash
-curl 
+curl -X POST -H "Some: Value" -d "{\"x\": 42}" http://localhost:5000/   
 ```
 
 # Tests

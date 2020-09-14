@@ -11,5 +11,5 @@ def get_rabbit_params():
         credentials=pika.PlainCredentials(
             username=os.environ['RABBITMQ_DEFAULT_USER'],
             password=os.environ['RABBITMQ_DEFAULT_PASS'],
-        )
+        ),
     )

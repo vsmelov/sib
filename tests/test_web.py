@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from daemons.web import get_app
+from sib.app import get_app
 from sib.targets.registered_targets import REGISTERED_TARGETS
 
 
