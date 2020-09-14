@@ -21,7 +21,7 @@ class TargetHttp(TargetBase):
         self._url = url
 
     def handle(self, headers: t.Dict[str, str], data: str):
-        logger.info(f'post {headers=} {data=}')
+        logger.info(f'post url={self._url} {headers=} {data=}')
         requests.post(self._url, headers=headers, data=data)
 
     def close(self):
