@@ -18,6 +18,7 @@ class TargetEmail(TargetBase):
     def create(cls):
         return cls(
             domain=os.environ['TARGET_EMAIL_DOMAIN'],
+            port=int(os.environ['TARGET_EMAIL_PORT']),
             login=os.environ['TARGET_EMAIL_LOGIN'],
             password=os.environ['TARGET_EMAIL_PASSWORD'],
             recipients=os.environ['TARGET_EMAIL_RECIPIENTS'].split(','),
@@ -26,12 +27,13 @@ class TargetEmail(TargetBase):
     def __init__(
             self,
             domain: str,
+            port: int,
             login: str,
             password: str,
             recipients: t.List[str],
     ):
-        self._smtp = smtplib.SMTP()
-        self._smtp.connect(domain, '587')
+        # https://ru.stackoverflow.com/questions/485608/smtplib-%D0%B2-python-c-smtp-yandex-ru
+        self._smtp = smtplib.SMTP_SSL(f'{domain}:{port}')
         self._login = login
         self._recipients = recipients
         self._smtp.login(login, password)
