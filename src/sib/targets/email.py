@@ -38,7 +38,7 @@ class TargetEmail(TargetBase):
         self._recipients = recipients
         self._smtp.login(login, password)
 
-    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
+    def handle(self, headers: t.Dict[str, str], data: str):
         subject = 'forwarded'
         msg = EmailMessage()
         content = f'{headers=} {data=}'

@@ -17,7 +17,7 @@ class TargetHttp(TargetBase):
     def __init__(self, url: str):
         self._url = url
 
-    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
+    def handle(self, headers: t.Dict[str, str], data: str):
         requests.post(self._url, headers=headers, data=data)
 
     def close(self):

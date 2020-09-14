@@ -23,7 +23,7 @@ class TargetBase(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def handle(self, headers: t.List[t.Tuple[str, str]], data: str):
+    def handle(self, headers: t.Dict[str, str], data: str):
         """ handle the request """
         pass
 
@@ -62,6 +62,7 @@ class TargetRunner:
         try:
             headers, data = pickle.loads(raw_body)
             headers = json.loads(headers)
+            headers = dict(headers)
         except (pickle.UnpicklingError, json.JSONDecodeError, TypeError, ValueError) as exc:
             logger.info(f'{raw_body=}')
             logger.exception(f'bad body {type(exc)}')
