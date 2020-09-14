@@ -1,12 +1,15 @@
+import logging
+
 import json
 import pickle
 
 import pika
 from flask import Flask, request, jsonify
 
-from daemons.web import logger
 from sib.targets import REGISTERED_TARGETS
 from sib.utils.rabbit import get_rabbit_params
+
+logger = logging.getLogger()
 
 
 def get_app():
